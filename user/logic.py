@@ -10,11 +10,10 @@ class UserRegistration(GenericHttpHandler):
 
     @classmethod
     def retrieve_data(cls):
-        users = User.query.filter_by(deleted_at=None).order_by(desc('created_at')).all()
-        return users
+        return User.query.filter_by(deleted_at=None).order_by(desc('created_at')).all()
 
     @classmethod
-    def post(cls, request, form, post_handler=None):
+    def post(cls, request, form):
         try:
             if form.validate_on_submit():
                 new_user = User()
@@ -22,10 +21,9 @@ class UserRegistration(GenericHttpHandler):
                 db.session.add(new_user)
                 db.session.commit()
                 flash('User added successfully!', 'success')
-                return cls.retrieve_data()
             else:
                 flash(f"Form validation errors: {form.errors}")
         except (IntegrityError, SQLAlchemyError) as e:
-            return cls.handle_database_errors(e)
+            cls.handle_database_errors(e)
 
         return cls.retrieve_data()

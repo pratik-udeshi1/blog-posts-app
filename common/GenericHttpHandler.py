@@ -13,41 +13,33 @@ class GenericHttpHandler:
             return cls.retrieve_data()
 
     @classmethod
-    def post(cls, request, form, post_handler=None):
+    def post(cls, request, form):
         try:
             if form.validate_on_submit():
-                if post_handler:
-                    return post_handler(request, form)
-                else:
-                    flash('No POST handler specified.', 'error')
+                return cls.process_post(request, form)
             else:
                 flash(f"Form validation errors: {form.errors}")
-
-        except IntegrityError as e:
-            db.session.rollback()
-            flash('IntegrityError Error.', str(e))
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            flash('SQLAlchemyError.', str(e))
+        except (IntegrityError, SQLAlchemyError) as e:
+            cls.handle_database_errors(e)
 
         return cls.retrieve_data()
 
     @classmethod
-    def get(cls, request, get_handler=None):
-        if get_handler:
-            return get_handler(request)
-        else:
-            flash('No GET handler specified.', 'error')
-            return cls.retrieve_data()
+    def get(cls, request):
+        return cls.retrieve_data()
 
     @classmethod
     def retrieve_data(cls):
         raise NotImplementedError("Subclasses must implement the retrieve_data method.")
 
-    # Utility function to handle database errors
+    @classmethod
+    def process_post(cls, request, form):
+        raise NotImplementedError("Subclasses must implement the process_post method.")
+
     @classmethod
     def handle_database_errors(cls, exception):
         db.session.rollback()
-        error_message = str(exception).split('[SQL:', 1)[0]  # Split at the first colon and take the second part
+        print("Database Error---------->", str(exception))
+        error_message = str(exception).split('[SQL:', 1)[0]
         flash(f'Database Error: {error_message}', 'error')
-        return cls.retrieve_data()  # Will now call the subclass's implementation
+        return cls.retrieve_data()
