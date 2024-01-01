@@ -10,7 +10,7 @@
 
     <div class="row justify-content-center">
         <div class="col-md-6 registration-form">
-            <form action="{{ url_for('user.signup') }}" method="post" autocomplete="off">
+            <form action="{{ url_for('user.register') }}" method="post" autocomplete="off">
                 {{ form.csrf_token }}
                 <div class="form-group">
                     <label for="full_name">Full Name:</label>
@@ -29,6 +29,7 @@
 
                 <button type="submit" class="btn btn-primary">Sign Up</button>
             </form>
+            <a href="{{url_for('user.login')}}">Login</a>
         </div>
     </div>
 </div>

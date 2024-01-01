@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>User Dashboard</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+  <h1 class="text-center">User Dashboard</h1>
+</div>
+
+<div class="container">
+  {% if user.posts %}
+  <h2>User Posts</h2>
+  <ul class="list-group">
+    {% for post in user.posts %}
+    <li class="list-group-item">{{ post.title }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-muted">No posts found.</p>
+  {% endif %}
+</div>
+
+{% endblock %}
