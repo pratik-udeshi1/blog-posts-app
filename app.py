@@ -6,10 +6,11 @@ from user.routes import user_blueprint  # Import blueprint after app initializat
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'random_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:admin@localhost:5432/medium'
 
 db.init_app(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 
 app.register_blueprint(user_blueprint)
 

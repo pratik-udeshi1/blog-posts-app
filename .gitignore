@@ -62,4 +62,4 @@ static/
 venv/
 env/
 project_env
-__pycache__/
+**__pycache__

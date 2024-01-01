@@ -15,7 +15,7 @@ class BaseModel(db.Model):
 
 
 class User(BaseModel):
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    full_name = db.Column(db.String(80), nullable=True, default='test')
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)

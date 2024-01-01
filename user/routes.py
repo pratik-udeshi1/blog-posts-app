@@ -7,7 +7,7 @@ user_blueprint = Blueprint('user', __name__, url_prefix='/user')
 
 
 @user_blueprint.route('/register', methods=['POST', 'GET'])
-def user_index():
+def signup():
     form = RegistrationForm()
     registration_handler = UserRegistration()
     users = registration_handler.handle_request(request, form)
