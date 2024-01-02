@@ -12,14 +12,14 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5>Story Stack</h5>
-        <a href="{{ url_for('post.create', user_id=user.id) }}">Forge a Storyline</a>
+        <a href="{{ url_for('post.create', user_id=data.user_id) }}">Forge a Storyline</a>
     </div>
 
-    {% if user.posts %}
+    {% if data.posts %}
     <ul class="list-group">
-        {% for post in user.posts %}
+        {% for post in data.posts %}
         <li class="list-group-item">
-            <a href="{{ url_for('post.show', user_id=user.id, post_id=post.id) }}">{{ post.title }}</a>
+            <a href="{{ url_for('post.show', user_id=data.user_id, post_id=post.id) }}">{{ post.title }}</a>
         </li>
         {% endfor %}
     </ul>

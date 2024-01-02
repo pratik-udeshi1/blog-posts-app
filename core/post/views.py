@@ -3,7 +3,7 @@ from sqlalchemy import desc
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from core.common.GenericHttpHandler import GenericHttpHandler
-from core.user.models import User, Post, db, Category
+from core.user.models import Post, db, Category
 
 
 class UserPostShow(GenericHttpHandler):
@@ -14,8 +14,12 @@ class UserPostShow(GenericHttpHandler):
         if post_id:
             return Post.query.filter_by(id=post_id, user_id=user_id).first()
 
-        user_query = User.query.filter_by(deleted_at=None, id=user_id)
-        return user_query.order_by(desc('created_at')).first()
+        posts = Post.query.filter_by(user_id=user_id).order_by(desc('created_at')).all()
+
+        data = dict()
+        data['posts'] = posts
+        data['user_id'] = user_id
+        return data
 
     @classmethod
     def post(cls, request, form=None, user_id=None):
