@@ -29,6 +29,5 @@ class Category(BaseModel):
 class Post(BaseModel):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
     category_id = db.Column(db.String(36), db.ForeignKey('category.id'), nullable=False)

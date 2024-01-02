@@ -47,7 +47,7 @@ class UserLogin(GenericHttpHandler):
 
                 if user and valid_password:
                     flash('logged in successfully', 'success')
-                    return redirect(url_for('dashboard'))  # Redirect to the 'dashboard' route
+                    return redirect(url_for('post'))  # Redirect to the 'post' route
                 else:
                     flash('Email or Password is incorrect', 'error')
             else:

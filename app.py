@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_migrate import Migrate
 
-from core.dashboard.routes import dashboard_blueprint
+from core.post.routes import post_blueprint
 from core.user.models import db
 from core.user.routes import user_blueprint
 
@@ -13,7 +13,7 @@ db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 
 app.register_blueprint(user_blueprint)
-app.register_blueprint(dashboard_blueprint)
+app.register_blueprint(post_blueprint)
 
 if __name__ == '__main__':
     app.run(debug=True)
