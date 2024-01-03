@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -14,8 +15,8 @@ class BaseModel(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)
 
 
-class User(BaseModel):
-    full_name = db.Column(db.String(80), nullable=True, default='test')
+class User(BaseModel, UserMixin):
+    full_name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)

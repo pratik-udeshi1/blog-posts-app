@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Explorer's Hub</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center">Explorer's Hub</h1>
+</div>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>Story Stack ({{ data.posts|length }})</h5>
+        <a href="{{ url_for('posts.create_post') }}">Forge a Storyline</a>
+    </div>
+
+    {% if data.posts %}
+    <ul class="list-group">
+        {% for post in data.posts %}
+        <li class="list-group-item">
+            <a href="{{ url_for('posts.retrieve_post', post_id=post.id) }}">{{ post.title }}</a>
+            <div class="float-right">
+                <button class="btn btn-primary ml-2" type="button"
+                        onclick="window.location.href='{{ url_for('posts.update_post', post_id=post.id) }}';">Edit
+                </button>
+                <button class="btn btn-danger" type="button"
+                        onclick="window.location.href='{{ url_for('posts.delete_post', post_id=post.id) }}';">Delete
+                </button>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-muted">No posts found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
