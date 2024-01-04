@@ -1,8 +1,9 @@
 from flask_login import login_user, current_user
+from flask_sqlalchemy.pagination import Pagination
 from sqlalchemy import desc
 
-from core.user.models import db, User
 from core.post.models import Post
+from core.user.models import db, User
 
 
 def get_mock_user():
@@ -12,17 +13,24 @@ def get_mock_user():
     return current_user.id if current_user.is_authenticated else None
 
 
-def get_user_posts(user_id, post_id=None):
+def get_user_posts(user_id, post_id=None, page=1, per_page=5):
     query = Post.query.filter_by(deleted_at=None)
 
     if post_id:
-        posts = query.filter_by(id=post_id).first()
+        post = query.filter_by(id=post_id).first()
         template = 'post/detail.html'
-    else:
-        posts = query.order_by(desc('created_at')).all()
-        template = 'post/all.html'
+        return [post], template
 
-    return posts, template
+    posts_query = query.order_by(desc('created_at'))
+
+    # Corrected pagination without unnecessary argument
+    paginated_posts = posts_query.paginate(page=page, per_page=per_page)
+
+    template = 'post/all.html'
+    return paginated_posts, template
+
+
+
 
 
 def create_post(data):

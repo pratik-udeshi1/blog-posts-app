@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pagination.css') }}">
 <title>Explorer's Hub</title>
 {% endblock %}
 
@@ -15,13 +16,13 @@
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5>Story Stack ({{ data.posts|length }})</h5>
+        <h5>Story Stack ({{ data.posts.total }})</h5>
         <a href="{{ url_for('posts.create_post') }}">Forge a Storyline</a>
     </div>
 
-    {% if data.posts %}
+    {% if data.posts.items %}
     <ul class="list-group">
-        {% for post in data.posts %}
+        {% for post in data.posts.items %}
         <li class="list-group-item">
             <a href="{{ url_for('posts.retrieve_post', post_id=post.id) }}">{{ post.title }}</a>
 
@@ -39,9 +40,43 @@
         </li>
         {% endfor %}
     </ul>
+
+    <div class="pagination">
+        <span class="small">Page {{ data.posts.page }} of {{ data.posts.pages }}</span>
+        {% if data.posts.has_prev %}
+        <a href="{{ url_for('posts.retrieve_post', page=data.posts.prev_num) }}">&lt; Previous</a>
+        {% endif %}
+        {% if data.posts.has_next %}
+        <a href="{{ url_for('posts.retrieve_post', page=data.posts.next_num) }}">Next &gt;</a>
+        {% endif %}
+    </div>
+
     {% else %}
     <p class="text-muted">No posts found.</p>
     {% endif %}
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var pagination = $('.pagination');
+        var pages = parseInt('{{ data.posts.pages }}');  // Replace with your actual number of pages
+
+        // Show a range of page numbers
+        var currentPage = parseInt('{{ data.posts.page }}');  // Replace with your actual current page
+        var startPage = Math.max(currentPage - 4, 1);
+        var endPage = Math.min(currentPage + 5, pages);
+        for (let i = startPage; i <= endPage; i++) {
+            pagination.append(`<a href="/posts?page=${i}">${i}</a>`);
+        }
+
+        if (endPage < pages) {
+            pagination.append('<span class="ellipsis">...</span>');
+        }
+
+        // Highlight the active page
+        pagination.find('a:contains("' + currentPage + '")').addClass('active');
+    });
+
+</script>
 {% endblock %}

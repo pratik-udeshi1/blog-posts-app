@@ -6,21 +6,23 @@ from flask import (
     redirect,
     url_for,
     Blueprint,
-    g, abort,
-)
+    g, request, )
 from flask_login import current_user
 
 import core.post.logic as core_logic
 from core.post.forms import PostForm
-from core.user.models import Category, db
 from core.post.models import Post
+from core.user.models import Category, db
 
 posts_bp = Blueprint('posts', __name__)
 
 
 @posts_bp.before_request
 def before_request():
-    abort(401) if not current_user.is_authenticated else None  # Prevent Unauthorized Access
+    # Prevent Unauthorized Access
+    if not current_user.is_authenticated:
+        flash('Please log in to access this page.', 'error')
+        return redirect(url_for('user.login_user'))
     g.user_id = current_user.id if current_user.is_authenticated else None
     g.categories = Category.query.filter_by(deleted_at=None).all()
 
@@ -28,10 +30,13 @@ def before_request():
 @posts_bp.route('/posts')
 @posts_bp.route('/post/<post_id>')
 def retrieve_post(post_id=None):
-    posts, template = core_logic.get_user_posts(g.user_id, post_id)
-    if not posts:
-        flash('Post not found.', 'error')
+    page = request.args.get('page', 1, type=int)
+    posts, template = core_logic.get_user_posts(g.user_id, post_id, page=page)
+
+    if not posts.items and page != 1:
+        flash('Invalid page number. Redirecting to the first page.', 'warning')
         return redirect(url_for('posts.retrieve_post'))
+
     data = {'user_id': g.user_id, 'posts': posts}
     return render_template(template, data=data)
 
@@ -88,12 +93,11 @@ def delete_post(post_id):
         flash('Unauthorized access or Post not found.', 'error')
         return redirect(url_for('posts.retrieve_post'))
 
-    if post:
-        try:
-            post.deleted_at = datetime.utcnow()
-            db.session.commit()
-            flash('Post deleted successfully!', 'success')
-        except Exception as e:
-            flash(f"Error deleting post: {e}", 'error')
+    try:
+        post.deleted_at = datetime.utcnow()
+        db.session.commit()
+        flash('Post deleted successfully!', 'success')
+    except Exception as e:
+        flash(f"Error deleting post: {e}", 'error')
 
     return redirect(url_for('posts.retrieve_post'))
