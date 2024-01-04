@@ -82,7 +82,11 @@ def update_post(post_id):
 
 @posts_bp.route('/post/<post_id>/delete', methods=['GET'])
 def delete_post(post_id):
-    post = Post.query.filter_by(deleted_at=None, id=post_id).first()
+    post = Post.query.filter_by(user_id=g.user_id, deleted_at=None, id=post_id).first()
+
+    if not post:
+        flash('Unauthorized access or Post not found.', 'error')
+        return redirect(url_for('posts.retrieve_post'))
 
     if post:
         try:

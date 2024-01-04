@@ -18,12 +18,9 @@ login_manager.init_app(app)
 
 @app.errorhandler(404)
 def not_found(error):
-    previous_page = request.referrer
-    if previous_page:
-        return render_template('404.html', previous_page=previous_page)
-    else:
-        # If no referrer is available, redirect to the homepage
-        return render_template('404.html', previous_page=url_for('posts.retrieve_post'))
+    # If no referrer is available, redirect to the posts page
+    redirect_url = request.referrer if request.referrer else url_for('posts.retrieve_post')
+    return render_template('404.html', previous_page=redirect_url)
 
 
 @app.errorhandler(401)
