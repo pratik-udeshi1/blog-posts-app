@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Explorer's Hub - 401 Unauthorized Request</title>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center">401 Unauthorized Request</h1>
+    <p class="text-muted text-center">Oops! It seems like you don't have the proper authorization to access this
+        resource. Please make sure you're logged in with the correct credentials or contact our support team for
+        assistance. Thank you!
+        .</p>
+    <div class="text-center mt-3">
+        <a href="{{ url_for('user.login_user') }}" class="btn btn-primary">Go to Login</a>
+    </div>
+</div>
+{% endblock %}

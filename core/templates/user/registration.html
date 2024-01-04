@@ -10,7 +10,7 @@
 
     <div class="row justify-content-center">
         <div class="col-md-6 registration-form">
-            <form action="{{ url_for('user.register') }}" method="post" autocomplete="off">
+            <form action="{{ url_for('user.register_user') }}" method="post" autocomplete="off">
                 {{ form.csrf_token }}
                 <div class="form-group">
                     <label for="full_name">Full Name:</label>
@@ -27,9 +27,12 @@
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Sign Up</button>
+                    <div class="signup-login-section">
+                        <button type="submit" class="btn btn-primary btn-signup">Register</button>
+                        <div class="or-separator">or</div>
+                        <a href="{{ url_for('user.login_user') }}">Go to Login</a>
+                    </div>
             </form>
-            <a href="{{url_for('user.login')}}">Login</a>
         </div>
     </div>
 </div>

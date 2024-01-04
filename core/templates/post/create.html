@@ -12,7 +12,6 @@
 <div class="container">
     <form method="POST" action="{{ url_for('posts.create_post') }}">
         {{ form.hidden_tag() }}
-        <input type="hidden" name="user_id" value={{ data.user_id }}>
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             {{ form.title(class="form-control", placeholder="Enter the title") }}

@@ -11,17 +11,28 @@
 </head>
 
 <body>
-{% with messages = get_flashed_messages() %}
+{% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        <ul class="flashes">
-            {% for message in messages %}
-                <li>{{ message }}</li>
+        <div class="container-fluid">
+            {% for category, message in messages %}
+                <div class="flashes {{ category }} float-right">
+                    <strong>{{ category.capitalize() }}:</strong> {{ message }}
+                </div>
+                <script>
+                    setTimeout(function() {
+                        $(".flashes").remove()
+                    }, 2500);
+                </script>
             {% endfor %}
-        </ul>
+        </div>
     {% endif %}
 {% endwith %}
 
-    {% block body %}{% endblock %}
+
+       <div class="container content-well">
+        {% block body %}{% endblock %}
+    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>

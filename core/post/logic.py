@@ -8,8 +8,7 @@ def get_mock_user():
     # Mocking User for Testing..
     test_user = User.query.join(Post).first()
     login_user(test_user)
-    user = current_user.id if current_user.is_authenticated else None
-    return user
+    return current_user.id if current_user.is_authenticated else None
 
 
 def get_user_posts(user_id, post_id=None):
@@ -19,14 +18,14 @@ def get_user_posts(user_id, post_id=None):
         posts = query.filter_by(id=post_id).first()
         template = 'post/detail.html'
     else:
-        posts = query.filter_by(user_id=user_id).order_by(desc('created_at')).all()
+        posts = query.order_by(desc('created_at')).all()
         template = 'post/all.html'
 
     return posts, template
 
 
-def create_post(data, user_id):
-    new_post = Post(**data, user_id=user_id)
+def create_post(data):
+    new_post = Post(**{key: value for key, value in data.items() if key != 'csrf_token'})
     db.session.add(new_post)
     db.session.commit()
 
