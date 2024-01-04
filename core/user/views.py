@@ -15,12 +15,6 @@ from core.user.models import db, User
 user_bp = Blueprint('user', __name__)
 
 
-# @user_bp.before_request
-# def before_request():
-#     g.user_id = core_logic.get_mock_user()
-#     g.categories = Category.query.filter_by(deleted_at=None).all()
-
-
 @user_bp.route('/user/register', methods=['GET', 'POST'])
 def register_user():
     form = RegistrationForm()

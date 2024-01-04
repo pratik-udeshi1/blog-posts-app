@@ -12,7 +12,8 @@ from flask_login import current_user
 
 import core.post.logic as core_logic
 from core.post.forms import PostForm
-from core.user.models import Category, Post, db
+from core.user.models import Category, db
+from core.post.models import Post
 
 posts_bp = Blueprint('posts', __name__)
 

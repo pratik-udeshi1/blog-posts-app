@@ -1,7 +1,8 @@
 from flask_login import login_user, current_user
 from sqlalchemy import desc
 
-from core.user.models import Post, db, User
+from core.user.models import db, User
+from core.post.models import Post
 
 
 def get_mock_user():
