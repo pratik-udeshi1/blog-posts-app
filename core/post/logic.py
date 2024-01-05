@@ -1,9 +1,12 @@
+from elasticsearch import Elasticsearch
 from flask_login import login_user, current_user
-from flask_sqlalchemy.pagination import Pagination
 from sqlalchemy import desc
 
+from core.post.es_search_queries import custom_search_query
 from core.post.models import Post
 from core.user.models import db, User
+
+es = Elasticsearch(['http://localhost:9200'])
 
 
 def get_mock_user():
@@ -13,24 +16,25 @@ def get_mock_user():
     return current_user.id if current_user.is_authenticated else None
 
 
-def get_user_posts(user_id, post_id=None, page=1, per_page=5):
+def get_user_posts(user_id, post_id=None, page=1, per_page=5, search_query=None):
     query = Post.query.filter_by(deleted_at=None)
 
     if post_id:
         post = query.filter_by(id=post_id).first()
         template = 'post/detail.html'
-        return [post], template
+        return post, template
 
-    posts_query = query.order_by(desc('created_at'))
+    if search_query:
+        es_query = es.search(index='posts_index', body=custom_search_query(search_query))
+        es_result_ids = [hit['_source']['post_id'] for hit in es_query['hits']['hits']]
 
-    # Corrected pagination without unnecessary argument
-    paginated_posts = posts_query.paginate(page=page, per_page=per_page)
+        query = query.filter(Post.id.in_(es_result_ids))
+        query = query.order_by(desc('created_at'))
 
-    template = 'post/all.html'
+        paginated_posts = query.paginate(page=page, per_page=per_page)
+
+        template = 'post/all.html'
     return paginated_posts, template
-
-
-
 
 
 def create_post(data):

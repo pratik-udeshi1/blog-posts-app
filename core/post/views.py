@@ -8,7 +8,6 @@ from flask import (
     Blueprint,
     g, request, )
 from flask_login import current_user
-
 import core.post.logic as core_logic
 from core.post.forms import PostForm
 from core.post.models import Post
@@ -31,13 +30,15 @@ def before_request():
 @posts_bp.route('/post/<post_id>')
 def retrieve_post(post_id=None):
     page = request.args.get('page', 1, type=int)
-    posts, template = core_logic.get_user_posts(g.user_id, post_id, page=page)
+    search_query = request.args.get('search_query', '')
 
-    if not posts.items and page != 1:
+    posts, template = core_logic.get_user_posts(g.user_id, post_id, page=page, search_query=search_query)
+
+    if posts is None:
         flash('Invalid page number. Redirecting to the first page.', 'warning')
         return redirect(url_for('posts.retrieve_post'))
 
-    data = {'user_id': g.user_id, 'posts': posts}
+    data = {'user_id': g.user_id, 'posts': posts, 'search_query': search_query}
     return render_template(template, data=data)
 
 

@@ -19,6 +19,11 @@
         <h5>Story Stack ({{ data.posts.total }})</h5>
         <a href="{{ url_for('posts.create_post') }}">Forge a Storyline</a>
     </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <input type="text" class="form-control col-4" id="post_search" placeholder="Search Posts"
+               value="{{ data.search_query }}">
+    </div>
+
 
     {% if data.posts.items %}
     <ul class="list-group">
@@ -44,7 +49,9 @@
     <div class="pagination">
         <span class="small">Page {{ data.posts.page }} of {{ data.posts.pages }}</span>
         {% if data.posts.has_prev %}
-        <a href="{{ url_for('posts.retrieve_post', page=data.posts.prev_num) }}">&lt; Previous</a>
+        <a href="{{ url_for('posts.retrieve_post', page=data.posts.prev_num, search_query=data.search_query) }}">
+            &lt; Previous
+        </a>
         {% endif %}
         <!--{% if data.posts.has_next %}
         <a href="{{ url_for('posts.retrieve_post', page=data.posts.next_num) }}">Next &gt;</a>
@@ -58,7 +65,15 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
     $(document).ready(function() {
+
+        $('#post_search').keypress(function (e) {
+            if (e.which === 13) {  // 13 corresponds to the Enter key
+                searchPosts();
+            }
+        });
+
         var pagination = $('.pagination');
         var pages = parseInt('{{ data.posts.pages }}');  // Replace with your actual number of pages
 
@@ -66,8 +81,16 @@
         var currentPage = parseInt('{{ data.posts.page }}');  // Replace with your actual current page
         var startPage = Math.max(currentPage - 4, 1);
         var endPage = Math.min(currentPage + 5, pages);
+        var searchQuery = $('#post_search').val();
         for (var i = startPage; i <= endPage; i++) {
-            pagination.append(`<a href="/posts?page=${i}">${i}</a>`);
+
+            var page_link = `/posts?page=${i}`
+
+            if (searchQuery) {
+                page_link += `&search_query=${searchQuery}`
+            }
+
+            pagination.append(`<a href="${page_link}">${i}</a>`);
         }
 
         if (endPage < pages) {
@@ -78,6 +101,17 @@
         // Highlight the active page
         pagination.find('a:contains("' + currentPage + '")').addClass('active');
     });
+
+
+    function searchPosts() {
+        var searchQuery = $('#post_search').val();
+        var url = "{{ url_for('posts.retrieve_post') }}" + "?search_query=" + searchQuery;
+        window.location.href = url;
+    }
+
+
+
+
 
 
 </script>
