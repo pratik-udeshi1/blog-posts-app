@@ -46,9 +46,9 @@
         {% if data.posts.has_prev %}
         <a href="{{ url_for('posts.retrieve_post', page=data.posts.prev_num) }}">&lt; Previous</a>
         {% endif %}
-        {% if data.posts.has_next %}
+        <!--{% if data.posts.has_next %}
         <a href="{{ url_for('posts.retrieve_post', page=data.posts.next_num) }}">Next &gt;</a>
-        {% endif %}
+        {% endif %}-->
     </div>
 
     {% else %}
@@ -66,17 +66,19 @@
         var currentPage = parseInt('{{ data.posts.page }}');  // Replace with your actual current page
         var startPage = Math.max(currentPage - 4, 1);
         var endPage = Math.min(currentPage + 5, pages);
-        for (let i = startPage; i <= endPage; i++) {
+        for (var i = startPage; i <= endPage; i++) {
             pagination.append(`<a href="/posts?page=${i}">${i}</a>`);
         }
 
         if (endPage < pages) {
             pagination.append('<span class="ellipsis">...</span>');
+            pagination.append('<a href="{{ url_for('posts.retrieve_post', page=data.posts.next_num) }}">Next &gt;</a>');
         }
 
         // Highlight the active page
         pagination.find('a:contains("' + currentPage + '")').addClass('active');
     });
+
 
 </script>
 {% endblock %}
