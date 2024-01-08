@@ -32,3 +32,16 @@ def custom_search_query(search_query):
             }
         }
     }
+
+
+def custom_search_query2(search_query):
+    return {
+        "query": {
+            "multi_match": {
+                "query": search_query,
+                "fields": ["title^{}".format(10.0), "content"],
+                "type": "best_fields",  # Change the type as needed (best_fields, most_fields, cross_fields)
+                "tie_breaker": 0.3  # Adjust the tiebreaker value as needed
+            }
+        }
+    }

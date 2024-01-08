@@ -2,6 +2,7 @@ import flask_login
 from flask import Flask, render_template, request, url_for
 from flask_migrate import Migrate
 
+from core.common.dflow import dflow_bp
 from core.post.views import posts_bp
 from core.user.models import db, User
 from core.user.views import user_bp
@@ -39,6 +40,7 @@ migrate = Migrate(app, db, render_as_batch=True)
 
 app.register_blueprint(user_bp)
 app.register_blueprint(posts_bp)
+app.register_blueprint(dflow_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)
